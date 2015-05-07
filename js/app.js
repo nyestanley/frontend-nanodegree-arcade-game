@@ -1,3 +1,4 @@
+
 // Enemies our player must avoid
 var Enemy = function() {
     // Variables applied to each of our instances go here,
@@ -6,7 +7,11 @@ var Enemy = function() {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
-    this.x=-110;
+    this.initialLocation = {
+        x:-100,
+        y:0
+    };
+    this.x=this.initialLocation.x;
     this.setEnemyCoordinateY();
     this.setEnemySpeed()
 }
@@ -17,25 +22,40 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    this.x = (this.x + this.speed);
+        if(this.x > canvas.width){
+            this.x=-110;
+            this.setEnemySpeed();
+            this.setEnemyCoordinateY();
+        }
+    
+        this.x = (this.x + this.speed);
+
+    
     //this.y = (this.x + this.speed) * dt;
     //this.render();
 }
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
+
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
 //Set enemy initital Y coordinate
 Enemy.prototype.setEnemyCoordinateY = function(){
-    var rowObject=[60, 145, 230]; 
+    //var rowObject=[60, 145, 230]; 
+    var rowObject=[83, 166, 249]; 
     this.y = rowObject[Math.floor(Math.random()*3)];
 }
 
 //Set enemy speed
 Enemy.prototype.setEnemySpeed = function(){
-    this.speed = Math.random()*9;
+    this.speed = Math.random()*5;
+}
+
+
+Enemy.prototype.reset=function(){
+    this.x=-110;
 }
 
 // Now write your own player class
@@ -43,8 +63,8 @@ Enemy.prototype.setEnemySpeed = function(){
 // a handleInput() method.
 var Player = function(){
     this.sprite = 'images/char-boy.png';
-    this.x = 200;
-    this.y = 380;
+    this.x = 202;
+    this.y = 415;
     this.moveX=0;
     this.moveY=0;
 }
@@ -55,17 +75,19 @@ Player.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-   /* if(this.moveX!=0){
-        this.x+=this.moveX;
+   
+   if(this.y+this.moveY <= 415 && this.y + this.moveY>= 0){
+        this.y=this.y+this.moveY;
     }
-    if(this.moveY!=0){
-        this.y+=this.moveY;
+    if(this.x+this.moveX < 505 && this.x + this.moveX >= 0){
+        this.x=this.x+this.moveX;
     }
-*/
-
-    console.log("Y move " + this.moveY);
-    this.y = this.y+this.moveY;
+   
+    /*this.y = this.y+this.moveY;
+    this.x = this.x+this.moveX;*/
     this.resetPlayerMoves();
+
+    console.log("x,y" + this.x + "," + this.y);
     
     
 }
@@ -79,19 +101,18 @@ Player.prototype.render = function() {
 Player.prototype.handleInput = function(allowedKeys) {
     console.log(allowedKeys);
 
-    if(allowedKeys='up'){
-        this.moveY=-65;
-        console.log(this.moveY);
+    if(allowedKeys=='up'){
+        this.moveY=(-83);
     }
-    if(allowedKeys='down'){
-        this.moveY=65;
+    if(allowedKeys=='down'){
+        this.moveY=83;
     }
-   /* if(allowedKeys='left'){
-        this.moveX=-65;
+    if(allowedKeys=='left'){
+        this.moveX=-101;
     }
-    if(allowedKeys='right'){
-        this.moveX=65;
-    }*/
+    if(allowedKeys=='right'){
+        this.moveX=101;
+    }
 
     console.log(this.y);
     
@@ -102,13 +123,30 @@ Player.prototype.resetPlayerMoves=function(){
     this.moveY = 0;
 }
 
+Player.prototype.reset =function(){
+    this.x=202;
+    this.y=415;
+}
+
+//Check for collision
+Player.prototype.checkCollision = function(enemy){
+    //if Enemy y coordinate is within 5 pixels of Player y coordinate, sprites are in same row
+
+    if((enemy.y == player.y) && enemy.x + 50 > player.x) {
+            return true;
+    }
+   /* console.log("Enemy Location:" + this.x + ',' + this.y);
+    console.log("Player Location:" + player.x + ',' + player.y);
+    return false;*/
+}
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 var player = new Player();
 var allEnemies = [];
 
-for(var i=1; i<=7; i++){
+for(var i=1; i<=1; i++){
 
 //var enemy1 = new Enemy();
 allEnemies.push(new Enemy());

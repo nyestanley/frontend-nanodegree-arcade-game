@@ -80,7 +80,7 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
     }
 
     /* This is called by the update function  and loops through all of the
@@ -95,6 +95,19 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
+    }
+
+     /* This is called by the update function  and loops through all of the
+     * objects within your allEnemies array as defined in app.js and calls
+     * their checkcollision() methods. Method is check if any enemy object has
+     collidied with the player
+     */
+    function checkCollisions() {
+        allEnemies.forEach(function(enemy) {
+            if(player.checkCollision(enemy))
+                reset();
+            
+        });
     }
 
     /* This function initially draws the "game level", it will then call
@@ -160,7 +173,12 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
+         allEnemies.forEach(function(enemy) {
+            enemy.reset();
+        });
+        player.reset();
+
+        main();
     }
 
     /* Go ahead and load all of the images we know we're going to need to
@@ -181,4 +199,5 @@ var Engine = (function(global) {
      * from within their app.js files.
      */
     global.ctx = ctx;
+    global.canvas = canvas;
 })(this);
