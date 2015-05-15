@@ -11,10 +11,10 @@ var Enemy = function() {
         x:-100,
         y:0
     };
-    this.x=this.initialLocation.x;
+    this.x = this.initialLocation.x;
     this.setEnemyCoordinateY();
-    this.setEnemySpeed()
-}
+    this.setEnemySpeed();
+};
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
@@ -22,41 +22,39 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+
         if(this.x > canvas.width){
-            this.x=-110;
+            this.x = -110;
             this.setEnemySpeed();
             this.setEnemyCoordinateY();
         }
     
-        this.x = (this.x + this.speed);
-
-    
-    //this.y = (this.x + this.speed) * dt;
-    //this.render();
-}
+        if(!isNaN(dt)){
+            this.x = (this.x + (this.speed*dt));
+        }
+};
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
 
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 //Set enemy initital Y coordinate
 Enemy.prototype.setEnemyCoordinateY = function(){
-    //var rowObject=[60, 145, 230]; 
-    var rowObject=[83, 166, 249]; 
+    var rowObject = [83, 166, 249]; 
     this.y = rowObject[Math.floor(Math.random()*3)];
-}
+};
 
 //Set enemy speed
 Enemy.prototype.setEnemySpeed = function(){
-    this.speed = Math.random()*5;
-}
+    this.speed = Math.random()*500+ 100;
+};
 
 
-Enemy.prototype.reset=function(){
-    this.x=-110;
-}
+Enemy.prototype.reset = function(){
+    this.x = -110;
+};
 
 // Now write your own player class
 // This class requires an update(), render() and
@@ -65,9 +63,9 @@ var Player = function(){
     this.sprite = 'images/char-boy.png';
     this.x = 202;
     this.y = 415;
-    this.moveX=0;
-    this.moveY=0;
-}
+    this.moveX = 0;
+    this.moveY = 0;
+};
 
 // Update the player's position, required method for game
 // Parameter: dt, a time delta between ticks
@@ -86,7 +84,7 @@ Player.prototype.update = function(dt) {
     }
 
     if(this.x+this.moveX < 505 && this.x + this.moveX >= 0){
-        this.x=this.x+this.moveX;
+        this.x = this.x+this.moveX;
     }
 
     this.resetPlayerMoves();
@@ -95,59 +93,76 @@ Player.prototype.update = function(dt) {
     //console.log("x,y" + this.x + "," + this.y);
     
     
-}
+};
 
 // Draw the player on the screen, required method for game
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 
 Player.prototype.handleInput = function(allowedKeys) {
 
-    if(allowedKeys=='up'){
-        this.moveY=(-83);
+    var yAxisMove = 83, xAxisMove = 101;
+
+    switch(allowedKeys){
+        case 'up':
+            this.moveY = -yAxisMove;
+            break;
+        case 'down':
+            this.moveY = yAxisMove;
+            break;
+        case 'left':
+            this.moveX = -xAxisMove;
+            break;
+        case 'right':
+            this.moveX = xAxisMove;
+            break;
+
+    }
+
+    /*if(allowedKeys=='up'){
+        this.moveY = (-83);
     }
     if(allowedKeys=='down'){
-        this.moveY=83;
+        this.moveY = 83;
     }
     if(allowedKeys=='left'){
-        this.moveX=-101;
+        this.moveX = -101;
     }
     if(allowedKeys=='right'){
-        this.moveX=101;
-    }
+        this.moveX = 101;
+    }*/
     
-}
+};
 
 Player.prototype.resetPlayerMoves=function(){
     this.moveX = 0;
     this.moveY = 0;
-}
+};
 
 Player.prototype.reset =function(){
-    this.x=202;
-    this.y=415;
-}
+    this.x = 202;
+    this.y = 415;
+};
 
 //Check for collision
 Player.prototype.checkCollision = function(enemy){
-    //if Enemy y coordinate is within 5 pixels of Player y coordinate, sprites are in same row
-
-    if((enemy.y == player.y) && ((enemy.x + 50 > player.x) && (enemy.x +50 < player.x+101))) {
-            return true;
-    }
-}
+    //if((enemy.y == player.y) && ((enemy.x + 50 > player.x) && (enemy.x +50 < player.x+101))) {
+            return ((enemy.y == player.y) && ((enemy.x + 50 > player.x) && (enemy.x +50 < player.x+101)));
+    //}
+};
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 var player = new Player();
 var allEnemies = [];
+var newEnemy;
 
-for(var i=1; i<=1; i++){
+for(var i=1; i<=4; i++){
 
-//var enemy1 = new Enemy();
+newEnemy = new Enemy();
 allEnemies.push(new Enemy());
 }
 
@@ -165,4 +180,3 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
-
