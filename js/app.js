@@ -23,12 +23,14 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
 
+        //If enemy reaches end of game board, loop back around and change row
         if(this.x > canvas.width){
             this.x = -110;
             this.setEnemySpeed();
             this.setEnemyCoordinateY();
         }
     
+        //sometimes dt returns 'NaN', make sure this.x is never NaN
         if(!isNaN(dt)){
             this.x = (this.x + (this.speed*dt));
         }
@@ -42,7 +44,7 @@ Enemy.prototype.render = function() {
 
 //Set enemy initital Y coordinate
 Enemy.prototype.setEnemyCoordinateY = function(){
-    var rowObject = [83, 166, 249]; 
+    var rowObject = [83, 166, 249]; //y coordinates of each stoned row
     this.y = rowObject[Math.floor(Math.random()*3)];
 };
 
@@ -56,9 +58,7 @@ Enemy.prototype.reset = function(){
     this.x = -110;
 };
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
+
 var Player = function(){
     this.sprite = 'images/char-boy.png';
     this.x = 202;
@@ -67,14 +67,12 @@ var Player = function(){
     this.moveY = 0;
 };
 
-// Update the player's position, required method for game
+// Update the player's position
 // Parameter: dt, a time delta between ticks
-Player.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
+Player.prototype.update = function() {
    
-    if(this.y+this.moveY <= 415 && this.y + this.moveY>= 0){
+    //if player reaches water, playes goes back to starting position
+        if(this.y+this.moveY <= 415 && this.y + this.moveY>= 0){
         this.y=this.y+this.moveY;
 
         if(this.y===0){
@@ -120,19 +118,6 @@ Player.prototype.handleInput = function(allowedKeys) {
             break;
 
     }
-
-    /*if(allowedKeys=='up'){
-        this.moveY = (-83);
-    }
-    if(allowedKeys=='down'){
-        this.moveY = 83;
-    }
-    if(allowedKeys=='left'){
-        this.moveX = -101;
-    }
-    if(allowedKeys=='right'){
-        this.moveX = 101;
-    }*/
     
 };
 
@@ -148,14 +133,10 @@ Player.prototype.reset =function(){
 
 //Check for collision
 Player.prototype.checkCollision = function(enemy){
-    //if((enemy.y == player.y) && ((enemy.x + 50 > player.x) && (enemy.x +50 < player.x+101))) {
-            return ((enemy.y == player.y) && ((enemy.x + 50 > player.x) && (enemy.x +50 < player.x+101)));
-    //}
+    return ((enemy.y == player.y) && ((enemy.x + 50 > player.x) && (enemy.x +50 < player.x+101)));
 };
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
+
 var player = new Player();
 var allEnemies = [];
 var newEnemy;
@@ -169,7 +150,7 @@ allEnemies.push(new Enemy());
 
 
 // This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
+// Player.handleInput() method. 
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
         37: 'left',
