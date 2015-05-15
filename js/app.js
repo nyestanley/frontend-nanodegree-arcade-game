@@ -76,18 +76,23 @@ Player.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
    
-   if(this.y+this.moveY <= 415 && this.y + this.moveY>= 0){
+    if(this.y+this.moveY <= 415 && this.y + this.moveY>= 0){
         this.y=this.y+this.moveY;
+
+        if(this.y===0){
+            this.reset();
+        }
+
     }
+
     if(this.x+this.moveX < 505 && this.x + this.moveX >= 0){
         this.x=this.x+this.moveX;
     }
-   
-    /*this.y = this.y+this.moveY;
-    this.x = this.x+this.moveX;*/
+
     this.resetPlayerMoves();
 
-    console.log("x,y" + this.x + "," + this.y);
+    //log Player's position
+    //console.log("x,y" + this.x + "," + this.y);
     
     
 }
@@ -99,7 +104,6 @@ Player.prototype.render = function() {
 
 
 Player.prototype.handleInput = function(allowedKeys) {
-    console.log(allowedKeys);
 
     if(allowedKeys=='up'){
         this.moveY=(-83);
@@ -113,8 +117,6 @@ Player.prototype.handleInput = function(allowedKeys) {
     if(allowedKeys=='right'){
         this.moveX=101;
     }
-
-    console.log(this.y);
     
 }
 
@@ -132,12 +134,9 @@ Player.prototype.reset =function(){
 Player.prototype.checkCollision = function(enemy){
     //if Enemy y coordinate is within 5 pixels of Player y coordinate, sprites are in same row
 
-    if((enemy.y == player.y) && enemy.x + 50 > player.x) {
+    if((enemy.y == player.y) && ((enemy.x + 50 > player.x) && (enemy.x +50 < player.x+101))) {
             return true;
     }
-   /* console.log("Enemy Location:" + this.x + ',' + this.y);
-    console.log("Player Location:" + player.x + ',' + player.y);
-    return false;*/
 }
 
 // Now instantiate your objects.
